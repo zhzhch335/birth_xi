@@ -4,7 +4,10 @@
       <img class="main" :style="{'opacity': showMoasic ? 0 : 1}" :src="main" alt=""/>
       <img class="main" :style="{'opacity': showMoasic ? 1 : 0}" :src="main625" alt=""/>
       <img class="masoic" :style="{'opacity': showMoasic ? 0.4 : 0.1}" :src="moasic"/>
-      <div v-for="item of grid" v-bind:key="item.id" class="grid"></div>
+      <div v-for="(item,index) of grid" @click.stop="clickGrid(index)" v-bind:key="item.id" class="grid"></div>
+    </div>
+    <div v-if="currentImage" @click="currentImage = null" class="blackCover">
+      <img :src="`/static/${currentImage}`" alt="">
     </div>
   </div>
 </template>
@@ -13,6 +16,9 @@
 import main from "../assets/image/main.png"
 import main625 from "../assets/image/main625.png"
 import mosaic from "../assets/image/result.png"
+
+import database from "../assets/database"
+
 export default {
   name: 'HappyBirchdayXi',
   data () {
@@ -22,7 +28,15 @@ export default {
       main: main,
       moasic: mosaic,
       main625: main625,
-      showMoasic: false
+      showMoasic: false,
+      showImage: true,
+      currentImage: "",
+      database: database
+    }
+  },
+  methods: {
+    clickGrid(index) {
+      this.currentImage = database.find(item=>item.index == index).url
     }
   }
 }
@@ -70,5 +84,20 @@ export default {
 .body {
   width: 100vw;
   text-align: center;
+}
+.blackCover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+.blackCover img {
+  width: 500px;
 }
 </style>
