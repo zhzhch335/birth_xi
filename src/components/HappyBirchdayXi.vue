@@ -130,7 +130,7 @@ export default {
   },
   mounted() {
     this.database.forEach(item => {
-      preloadImg(item.url)
+      preloadImg(`/static/${item.url}`)
     })
     this.showMusic = true
   },
