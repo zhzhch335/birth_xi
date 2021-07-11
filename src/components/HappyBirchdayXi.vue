@@ -122,7 +122,7 @@ export default {
       currentData: null,
       database: database,
       blessList: _.uniqBy(database.map(item => { return {dduser: item.dduser,content: item.content} }), 'dduser'),
-      showContent: "imageList",
+      showContent: null,
       authorList: _.uniqBy(database.filter(item=>item.uid).map(item => { return {author: item.author,uid: item.uid, showImg: false} }), 'uid'),
       imgList: _.uniqBy(database.filter(item=>item.uid).map(item => { return {author: item.author,uid: item.uid} }), 'uid'),
       showMusic: false
