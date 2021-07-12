@@ -1,21 +1,30 @@
 <template>
   <div class="body">
+    <audio ref="supriseMusic" src="/static/assets/suprise.m4a"></audio>
     <!-- <img src="/static/assets/bg2.png" style="z-index:1;position:absolute;right:0;bottom:0" alt=""> -->
     <iframe v-if="showMusic" id="music" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1385796832&auto=1&height=66"></iframe>
     <div class="navigator">
+      <div v-if="showSurpirse" @click="startSuprise()" class="li">小希！生日快乐！</div>
       <div @click="toMoeGirl()" class="li">她是谁</div>
       <div @click="showContent = 'imageList'" class="li">二创图列表</div>
       <div @click="showContent = 'blessList'" class="li">祝福列表</div>
       <div @click="showContent = 'thanks'" class="li">鸣谢</div>
     </div>
     <div class="center">
+      <div class="supriseBless">
+        {{supriseBless}}
+      </div>
       <img class="main" :style="{'opacity': showMoasic ? 0 : 1}" :src="main" alt=""/>
       <img class="main" :style="{'opacity': showMoasic ? 1 : 0}" :src="main625" alt=""/>
       <img class="masoic" :style="{'opacity': showMoasic ? 0.4 : 0.1}" :src="moasic"/>
-      <div @mouseover="showMoasic = true" @mouseleave="showMoasic = false" v-for="(item,index) of grid" @click.stop="clickGrid(index)" v-bind:key="item.id" class="grid"></div>
+      <div :style="{'background-image':item ? `url(/static/assets/suprise/图_${index + 1}.gif` : ''}" :class="{'gridRead':item}" @mouseover="showMoasic = true" @mouseleave="showMoasic = false" v-for="(item,index) of grid" @click.stop="clickGrid(index)" v-bind:key="item.id" class="grid"></div>
       <div class="arrow">
         <img src="/static/assets/arrow.png" alt="">
         <div class="suprise">点开每个小图有惊喜哦！</div>
+      </div>
+      <div v-if="grid.some(item=>item)" class="btns">
+        <div @click.stop="happyBirthDay()" class="btn">懒得翻辣！直接翻开吧！</div>
+        <div @click.stop="reset()" class="btn">我要重新翻！</div>
       </div>
     </div>
     <div v-if="currentData" @click="currentData = null" class="blackCover">
@@ -111,7 +120,7 @@ function preloadImg(url) {
 export default {
   name: 'HappyBirchdayXi',
   data () {
-    let grid = new Array(625).fill([])
+    let grid = JSON.parse(localStorage.getItem('grid')) || new Array(625).fill(false)
     return {
       grid,
       main: main,
@@ -125,7 +134,9 @@ export default {
       showContent: null,
       authorList: _.uniqBy(database.filter(item=>item.uid).map(item => { return {author: item.author,uid: item.uid, showImg: false} }), 'uid'),
       imgList: _.uniqBy(database.filter(item=>item.uid).map(item => { return {author: item.author,uid: item.uid} }), 'uid'),
-      showMusic: false
+      showMusic: false,
+      showSurpirse: false,
+      supriseBless: ""
     }
   },
   mounted() {
@@ -140,6 +151,11 @@ export default {
     },
     clickGrid(index) {
       this.currentData = database.find(item=>item.index == index)
+      let url = this.database.find(item=>index === item.index).url
+      this.database.filter(item=>item.url === url).forEach(item => {
+        this.grid[item.index] = true
+      })
+      localStorage.setItem('grid',JSON.stringify(this.grid))
     },
     toSpace(uid) {
       if (!uid) return
@@ -151,6 +167,27 @@ export default {
     },
     showImg(img) {
       window.open(`/static/${img}`,'__blank')
+    },
+    reset() {
+      this.grid = new Array(625).fill(false)
+      localStorage.setItem('grid',JSON.stringify(this.grid))
+    },
+    happyBirthDay() {
+      this.$refs.supriseMusic.play()
+      let bless = `选择了一幅你自己的画和你自己的歌作为礼物,这幅画让我想到那个因为整晚没有击败盖侬而哭鼻子的小希，她却不知道出了台地就单挑盖侬已经击败了多少玩家,看着这个小希的背影,我知道她有时会很脆弱，但往往最后都会打起精神，甚至眼泪还没擦干,我知道她有时会很自卑，但往往接下来会努力让自己变得更加美好，甚至还心有余悸,我知道她有时会很任性，但往往还能坚持自我勇敢前行，甚至`
+      let splitBless = bless.split("")
+      let index = 0
+      let interval = setInterval(() => {
+        if (!splitBless[index]) {
+          clearInterval(interval)
+          return
+        }
+        this.supriseBless += splitBless[index]
+        index++
+      },250)
+      this.showSurpirse = true
+      this.grid = new Array(625).fill(true)
+      localStorage.setItem('grid',JSON.stringify(new Array(625).fill(false)))
     }
   },
 }
@@ -201,6 +238,15 @@ export default {
   display: flex;
   flex-wrap: wrap;
 }
+.supriseBless {
+  position: absolute;
+  padding: 0 50px;
+  top: 30%;
+  z-index: 5;
+  font-size: 30px;
+  font-family: 'bhwnn';
+  text-align: left;
+}
 .arrow {
   position: absolute;
   top: 35vh;
@@ -217,6 +263,22 @@ export default {
   width: 350px;
   font-family: 'bhwnn';
 }
+.btns {
+  position: absolute;
+  top: 10vh;
+  left: 85vh;
+  width: 350px;
+}
+.btns .btn {
+  font-family: 'bhwnn';
+  font-size: 30px;
+  text-align: left;
+  margin-top: 20px;
+  cursor:pointer;
+}
+.btns .btn:hover {
+  text-decoration: underline;
+}
 .main {
   filter: blur(1px);
   transition: 0.5s all;
@@ -225,13 +287,20 @@ export default {
   width: 4%;
   height: 4%;
   background: white;
+  background-size: cover;
   opacity: 0.3;
   position: relative;
   z-index: 2;
 }
 .grid:hover {
-  background: black;
-  
+  background-color: black;
+}
+.gridRead {
+  background-color: transparent;
+  opacity: 0.9;
+}
+.gridRead:hover {
+  background-color: transparent;
 }
 .main, .masoic {
   position: absolute;
@@ -315,7 +384,7 @@ export default {
   text-align: left;
 }
 .blackCover .postcard .bless .dduser {
-  margin-top: 50px;
+  margin-top: 10px;
   text-align: right;
 }
 .blackCover img {
