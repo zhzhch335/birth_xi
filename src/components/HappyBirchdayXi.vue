@@ -1,9 +1,15 @@
 <template>
   <div class="body">
     <div v-if="!hideLoading" class="loading">
-      <img class="d-block" src="/static/assets/sunny-light.svg" style="width:96px;opacity:0.5">
-      <div v-if="loading" class="loadingText">加载中，请稍候({{Math.floor(imgloaded / (database.length * 2) * 100)}}%)……</div>
-      <div v-else @click="hideLoading = true" class="loaded">进入</div>
+      <div v-if="goumienasai" style="display:flex;align-items:center;justify-content:center;flex-direction:column">
+        <div style="font-family:'bhwnn';font-size:10vw;padding:0 10vw">抱歉！由于技术力和时间的问题，没有做手机的适配，请到电脑上看吧！</div>
+        <div style="font-family:'bhwnn';font-size:1vw">但是不忙的话，请和我一起大声喊：希爹是我爹，我是希爹儿！</div>
+      </div>
+      <div v-else>
+        <img class="d-block" src="/static/assets/sunny-light.svg" style="width:96px;opacity:0.5">
+        <div v-if="loading" class="loadingText">加载中，请稍候({{Math.floor(imgloaded / (database.length * 2) * 100)}}%)……</div>
+        <div v-else @click="hideLoading = true" class="loaded">进入</div>
+      </div>
     </div>
     <audio ref="supriseMusic" preload="auto" src="/static/assets/suprise.ogg"></audio>
     <!-- <img src="/static/assets/bg2.png" style="z-index:1;position:absolute;right:0;bottom:0" alt=""> -->
@@ -159,25 +165,30 @@ export default {
       showSurpirse: false,
       showMusic: true,
       supriseBless: "",
-      showResetPage: false
+      showResetPage: false,
+      goumienasai: false
     }
   },
   mounted() {
-    this.database.forEach((item, index) => {
-      preloadImg(`/static/${item.url}`,()=>{
-        this.imgloaded++
-        if (this.imgloaded === this.database.length * 2) {
-          this.loading = false
-        }
+    if (window.innerHeight > innerWidth) {
+      this.goumienasai = true
+    } else {
+      this.database.forEach((item, index) => {
+        preloadImg(`/static/${item.url}`,()=>{
+          this.imgloaded++
+          if (this.imgloaded === this.database.length * 2) {
+            this.loading = false
+          }
+        })
+        preloadImg(`/static/assets/suprise/图_${index + 1}.gif`, () => {
+          this.imgloaded++
+          if (this.imgloaded === this.database.length * 2) {
+            this.loading = false
+          }
+        })
+        preloadImg("/static/assets/postcard.png",()=>{})
       })
-      preloadImg(`/static/assets/suprise/图_${index + 1}.gif`, () => {
-        this.imgloaded++
-        if (this.imgloaded === this.database.length * 2) {
-          this.loading = false
-        }
-      })
-      preloadImg("/static/assets/postcard.png",()=>{})
-    })
+    }
   },
   methods: {
     toMoeGirl() {
@@ -563,5 +574,6 @@ export default {
   left: 48%;
   color: #ee9ca7;
   font-family: 'bhwnn';
+  z-index: 10000;
 }
 </style>
