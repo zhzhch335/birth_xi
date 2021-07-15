@@ -11,7 +11,7 @@
         <div v-else @click="hideLoading = true" class="loaded">进入</div>
       </div>
     </div>
-    <audio ref="supriseMusic" preload="auto" src="/static/assets/suprise.ogg"></audio>
+    <audio ref="supriseMusic" src="/static/assets/suprise.ogg"></audio>
     <!-- <img src="/static/assets/bg2.png" style="z-index:1;position:absolute;right:0;bottom:0" alt=""> -->
     <iframe v-if="hideLoading && showMusic" id="music" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1385796832&auto=1&height=66"></iframe>
     <div class="navigator">
@@ -38,7 +38,7 @@
         <div @click.stop="reset()" class="btn">我要重新翻！</div>
       </div>
     </div>
-    <div v-if="currentData" @click="currentData = null" class="blackCover">
+    <div v-if="currentData" @click="hideImg()" class="blackCover">
       <!-- <div @click="before()" class="before">❮</div>
       <div @click="next()" class="next">❯</div> -->
       <div class="postcard">
@@ -189,6 +189,8 @@ export default {
         preloadImg("/static/assets/postcard.png",()=>{})
       })
     }
+    this.$refs.supriseMusic.muted = true
+    this.$refs.supriseMusic.play()
   },
   methods: {
     toMoeGirl() {
@@ -201,6 +203,8 @@ export default {
       this.database.filter(item=>item.url === url).forEach(item => {
         this.grid[item.index] = true
       })
+      // this.grid = this.grid.map(item=>true)
+      // this.grid[624] = false
       localStorage.setItem('grid',JSON.stringify(this.grid))
     },
     // before() {
@@ -223,6 +227,12 @@ export default {
     showImg(img) {
       window.open(`/static/${img}`,'__blank')
     },
+    hideImg() {
+      this.currentData = null
+      if(!this.grid.some(item => item == false)) {
+        this.happyBirthDay()
+      }
+    },
     reset() {
       this.supriseBless = ""
       this.grid = new Array(625).fill(false)
@@ -231,7 +241,8 @@ export default {
     happyBirthDay() {
       // this.$refs.music.pause()
       this.showMusic = false
-      this.$refs.supriseMusic.play()
+      this.$refs.supriseMusic.currentTime = 0
+      this.$refs.supriseMusic.muted = false
       let bless = `选择了一幅你自己的画作为礼物,这幅画让我想到那个因为整晚没有击败盖侬而哭鼻子的小希，她却不知道出了台地就单挑盖侬已经击败了多少玩家,看着这个小希的背影,我知道她有时会很脆弱，但往往最后都会打起精神，甚至眼泪还没擦干，就会像这幅画一样，坚定的勇往直前。小希，四岁生日快乐！愿你一如既往，愿你心有暖阳~`
       let splitBless = bless.split("")
       let index = 0
@@ -488,7 +499,7 @@ export default {
   justify-content: center;
   height: 100%;
   font-family: 'bhwnn';
-  padding: 0 20px;
+  padding: 0 0 0 10px;
   flex-grow: 1;
 }
 .blackCover .postcard .bless .content {
