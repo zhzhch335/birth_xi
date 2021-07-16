@@ -7,6 +7,14 @@
     <title>祝小希4岁生日快乐！</title>
   </head>
   <body>
+    <script>
+      var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串  
+      var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器  
+      var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1; //判断是否IE11浏览器
+      if (isIE || isIE11) {
+        alert("这个网页兼容不了IE，呜呜呜~~~~求求你不要用IE了，谷歌和360它不香吗（但是来都来了，一起念，希爹是我爹，我是希爹儿！）")
+      }
+    </script>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>

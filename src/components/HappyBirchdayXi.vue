@@ -12,6 +12,7 @@
       </div>
     </div>
     <audio ref="supriseMusic" src="/static/assets/suprise.ogg"></audio>
+    <audio v-if="showSurpirse" autoplay src="/static/assets/suprise.ogg"></audio>
     <!-- <img src="/static/assets/bg2.png" style="z-index:1;position:absolute;right:0;bottom:0" alt=""> -->
     <iframe v-if="hideLoading && showMusic" id="music" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1385796832&auto=1&height=66"></iframe>
     <div class="navigator">
@@ -127,6 +128,7 @@ function preloadImg(url,cb) {
     if(img.complete) {
         //接下来可以使用图片了
         //do something here
+        cb()
     }
     else {
         img.onload = function() {
@@ -176,12 +178,24 @@ export default {
       this.database.forEach((item, index) => {
         preloadImg(`/static/${item.url}`,()=>{
           this.imgloaded++
+          if (this.imgloaded === this.database.length) {
+            // 预加载完成5秒后结束加载，避免等待时间过长
+            setTimeout(()=>{
+              this.loading = false
+            },5000)
+          }
           if (this.imgloaded === this.database.length * 2) {
             this.loading = false
           }
         })
         preloadImg(`/static/assets/suprise/图_${index + 1}.gif`, () => {
           this.imgloaded++
+          if (this.imgloaded === this.database.length) {
+            // 预加载完成5秒后结束加载，避免等待时间过长
+            setTimeout(()=>{
+              this.loading = false
+            },5000)
+          }
           if (this.imgloaded === this.database.length * 2) {
             this.loading = false
           }
@@ -241,8 +255,8 @@ export default {
     happyBirthDay() {
       // this.$refs.music.pause()
       this.showMusic = false
-      this.$refs.supriseMusic.currentTime = 0
-      this.$refs.supriseMusic.muted = false
+      // this.$refs.supriseMusic.currentTime = 0
+      // this.$refs.supriseMusic.muted = false
       let bless = `选择了一幅你自己的画作为礼物,这幅画让我想到那个因为整晚没有击败盖侬而哭鼻子的小希，她却不知道出了台地就单挑盖侬已经击败了多少玩家,看着这个小希的背影,我知道她有时会很脆弱，但往往最后都会打起精神，甚至眼泪还没擦干，就会像这幅画一样，坚定的勇往直前。小希，四岁生日快乐！愿你一如既往，愿你心有暖阳~`
       let splitBless = bless.split("")
       let index = 0
@@ -585,6 +599,6 @@ export default {
   left: 48%;
   color: #ee9ca7;
   font-family: 'bhwnn';
-  z-index: 10000;
+  z-index: 6;
 }
 </style>
