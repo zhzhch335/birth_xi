@@ -7,7 +7,7 @@
       </div>
       <div v-else>
         <img class="d-block" src="/static/assets/sunny-light.svg" style="width:96px;opacity:0.5">
-        <div v-if="loading" class="loadingText">加载中，请稍候({{Math.floor(imgloaded / (database.length * 2) * 100)}}%)……</div>
+        <div v-if="loading" class="loadingText">加载中，请稍候({{Math.floor(imgloaded / database.length * 100)}}%)……</div>
         <div v-else @click="hideLoading = true" class="loaded">进入</div>
       </div>
     </div>
@@ -29,7 +29,7 @@
       <img class="main" :style="{'opacity': showMoasic ? 0 : 1}" :src="main" alt=""/>
       <img class="main" :style="{'opacity': showMoasic ? 1 : 0}" :src="main625" alt=""/>
       <img class="masoic" :style="{'opacity': showMoasic ? 0.4 : 0.1}" :src="moasic"/>
-      <div :style="{'background-image':item ? `url(/static/assets/suprise/图_${index + 1}.gif` : ''}" :class="{'gridRead':item}" @mouseover="showMoasic = true" @mouseleave="showMoasic = false" v-for="(item,index) of grid" @click.stop="clickGrid(index)" v-bind:key="item.id" class="grid"></div>
+      <div :style="{'background-position':`${index % 25 * 4}% ${Math.floor(index / 25) * 4}%`}" :class="{'gridRead':item,'showBackground':item}" @mouseover="showMoasic = true" @mouseleave="showMoasic = false" v-for="(item,index) of grid" @click.stop="clickGrid(index)" v-bind:key="item.id" class="grid"></div>
       <div v-if="!showSurpirse" class="arrow">
         <img src="/static/assets/arrow.png" alt="">
         <div class="suprise">点开每个小图有惊喜哦！</div>
@@ -175,28 +175,10 @@ export default {
     if (window.innerHeight > innerWidth) {
       this.goumienasai = true
     } else {
-      this.database.forEach((item, index) => {
+      this.database.forEach(item => {
         preloadImg(`/static/${item.url}`,()=>{
           this.imgloaded++
           if (this.imgloaded === this.database.length) {
-            // 预加载完成5秒后结束加载，避免等待时间过长
-            setTimeout(()=>{
-              this.loading = false
-            },5000)
-          }
-          if (this.imgloaded === this.database.length * 2) {
-            this.loading = false
-          }
-        })
-        preloadImg(`/static/assets/suprise/图_${index + 1}.gif`, () => {
-          this.imgloaded++
-          if (this.imgloaded === this.database.length) {
-            // 预加载完成5秒后结束加载，避免等待时间过长
-            setTimeout(()=>{
-              this.loading = false
-            },5000)
-          }
-          if (this.imgloaded === this.database.length * 2) {
             this.loading = false
           }
         })
@@ -323,7 +305,7 @@ export default {
 }
 @font-face {
   font-family: 'bhwnn';
-  src: url('https://zhzhch335-1252378763.cos.ap-beijing.myqcloud.com/bhwnn.TTF');
+  src: url('/static/assets/bhwnn.TTF');
 }
 .navigator {
   position: absolute;
@@ -432,11 +414,16 @@ export default {
   background-color: black;
 }
 .gridRead {
-  background-color: transparent;
-  opacity: 0.9;
+  background-image: url('/static/assets/图.jpg');
+  opacity: 0.1;
+  transition: all 1s;
 }
 .gridRead:hover {
   background-color: transparent;
+}
+.showBackground {
+  opacity: 1;
+  background-size: 80vh 80vh;
 }
 .main, .masoic {
   position: absolute;
@@ -599,6 +586,6 @@ export default {
   left: 48%;
   color: #ee9ca7;
   font-family: 'bhwnn';
-  z-index: 6;
+  z-index: 3;
 }
 </style>
