@@ -589,6 +589,7 @@ export default {
   position: absolute;
   left: 30vh;
   bottom: 10vh;
+  z-index: 3;
 }
 #beian {
   position: absolute;
