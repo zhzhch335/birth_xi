@@ -11,10 +11,18 @@
         <div v-else @click="hideLoading = true" class="loaded">进入</div>
       </div>
     </div>
+    <div class="decoration">
+      <img src="/static/assets/title.png" alt="" class="title">
+      <img src="/static/assets/leftxi.png" alt="" class="leftXi">
+      <img src="/static/assets/rightxi.png" alt="" class="rightXi">
+      <img src="/static/assets/seal.png" alt="" class="seal">
+      <img src="/static/assets/upDe.png" alt="" class="upDe">
+      <img src="/static/assets/downDe.png" alt="" class="downDe">
+    </div>
     <audio ref="supriseMusic" src="/static/assets/suprise.ogg"></audio>
     <audio v-if="showSurpirse" autoplay src="/static/assets/suprise.ogg"></audio>
     <!-- <img src="/static/assets/bg2.png" style="z-index:1;position:absolute;right:0;bottom:0" alt=""> -->
-    <iframe v-if="hideLoading && showMusic" id="music" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1385796832&auto=1&height=66"></iframe>
+    <iframe v-if="hideLoading && showMusic" id="music" frameborder="no" border="0" marginwidth="0" marginheight="0" style="width:36vh" height=86 src="//music.163.com/outchain/player?type=2&id=1385796832&auto=1&height=66"></iframe>
     <div class="navigator">
       <div @click="toMoeGirl()" class="li">她是谁</div>
       <div @click="showContent = 'imageList'" class="li">二创图列表</div>
@@ -309,19 +317,19 @@ export default {
 }
 .navigator {
   position: absolute;
-  left: 150px;
-  bottom: 100px;
-  font-size: 40px;
+  left: 30vh;
+  bottom: 23vh;
+  font-size: 5vh;
   font-family: "bhwnn";
-  /* color: white; */
+  z-index: 3;
 }
 .navigator .li:hover {
   text-decoration: underline;
   cursor:pointer;
 }
 .center {
-  width: 80vh;
-  height: 80vh;
+  width: 70vh;
+  height: 70vh;
   margin: auto;
   /* margin-left: 200px; */
   position: relative;
@@ -329,6 +337,7 @@ export default {
   left: 0;
   display: flex;
   flex-wrap: wrap;
+  z-index: 4;
 }
 .supriseBless {
   position: absolute;
@@ -367,29 +376,29 @@ export default {
 }
 .arrow {
   position: absolute;
-  top: 35vh;
-  left: 85vh;
+  top: 30vh;
+  left: 75vh;
 }
 .arrow img {
   height: 10vh;
 }
 .suprise {
   position: absolute;
-  bottom: -70px;
+  bottom: -7vh;
   left: 0;
-  font-size: 30px;
-  width: 350px;
+  font-size: 4vh;
+  width: 45vh;
   font-family: 'bhwnn';
 }
 .btns {
   position: absolute;
   top: 10vh;
-  left: 85vh;
-  width: 350px;
+  left: 75vh;
+  white-space: nowrap;
 }
 .btns .btn {
   font-family: 'bhwnn';
-  font-size: 30px;
+  font-size: 4vh;
   text-align: left;
   margin-top: 20px;
   cursor:pointer;
@@ -437,12 +446,13 @@ export default {
   /* filter: blur(1px) */
 }
 .body {
-  padding-top: 60px;
   width: 100vw;
   height: 100vh;
   background: pink url("/static/assets/bg1.png");
   background-size: 100% 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 .blackCover {
   position: absolute;
@@ -577,15 +587,62 @@ export default {
 }
 #music {
   position: absolute;
-  right: 100px;
-  bottom: 100px;
+  left: 30vh;
+  bottom: 10vh;
 }
 #beian {
   position: absolute;
   bottom: 10px;
-  left: 48%;
+  width: 100%;
+  text-align: center;
   color: #ee9ca7;
   font-family: 'bhwnn';
   z-index: 3;
+}
+.decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.decoration .upDe,.decoration .downDe {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+.decoration .upDe {
+  top: -10px;
+}
+.decoration .downDe {
+  bottom: -20px;
+}
+.decoration .title {
+  height: 36vh;
+  position: absolute;
+  left: 3vh;
+  top: 7vh;
+  z-index: 2;
+}
+.decoration .leftXi {
+  position: absolute;
+  bottom: 2.5vh;
+  left: 0;
+  height: 40vh;
+}
+.decoration .rightXi {
+  position: absolute;
+  bottom: 2.5vh;
+  right: 5vh;
+  height: 42vh;
+}
+.decoration .seal {
+  height: 28vh;
+  position: absolute;
+  top: 5vh;
+  right: 0;
+  z-index: 2;
 }
 </style>
