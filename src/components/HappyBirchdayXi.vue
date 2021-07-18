@@ -2,7 +2,7 @@
   <div class="body">
     <div v-if="!hideLoading" class="loading">
       <div v-if="goumienasai" style="display:flex;align-items:center;justify-content:center;flex-direction:column">
-        <div style="font-family:'bhwnn';font-size:10vw;padding:0 10vw">抱歉！由于技术力和时间的问题，没有做手机的适配，请到电脑上看吧！</div>
+        <div style="font-family:'bhwnn';font-size:10vw;padding:0 10vw">抱歉！由于技术力和时间的问题，没有做手机和竖屏的适配，请到电脑上看吧！（记得设置正常的浏览器大小！）</div>
         <div style="font-family:'bhwnn';font-size:1vw">但是不忙的话，请和我一起大声喊：希爹是我爹，我是希爹儿！</div>
       </div>
       <div v-else>
@@ -34,13 +34,14 @@
         {{supriseBless}}
       </div>
       <img v-if="showResetPage" @click="resetPage()" src="/static/assets/reset.png" class="resetIcon" alt="">
+      <div v-if="showResetPage" @click="showContent = 'blessList'" class="allBless">查看全部祝福</div>
       <img class="main" :style="{'opacity': showMoasic ? 0 : 1}" :src="main" alt=""/>
       <img class="main" :style="{'opacity': showMoasic ? 1 : 0}" :src="main625" alt=""/>
       <img class="masoic" :style="{'opacity': showMoasic ? 0.4 : 0.1}" :src="moasic"/>
       <div :style="{'background-position':`${index % 25 * 4}% ${Math.floor(index / 25) * 4}%`}" :class="{'gridRead':item,'showBackground':item}" @mouseover="showMoasic = true" @mouseleave="showMoasic = false" v-for="(item,index) of grid" @click.stop="clickGrid(index)" v-bind:key="item.id" class="grid"></div>
       <div v-if="!showSurpirse" class="arrow">
         <img src="/static/assets/arrow.png" alt="">
-        <div class="suprise">点开每个小图有惊喜哦！</div>
+        <div class="suprise">点开全部小图有惊喜哦！</div>
       </div>
       <div v-if="grid.some(item=>item) && !showSurpirse" class="btns">
         <div @click.stop="happyBirthDay()" class="btn">懒得翻辣！直接翻开吧！</div>
@@ -52,7 +53,7 @@
       <div @click="next()" class="next">❯</div> -->
       <div class="postcard">
         <div class="image">
-          <img @click="showImg(currentData.url)" style="cursor:pointer" :src="`/static/${currentData.url}`" alt="">
+          <img @click.stop="showImg(currentData.url)" style="cursor:pointer" :src="`/static/${currentData.url}`" alt="">
           <div class="author" @click.stop="toSpace(currentData.uid)">图：<span :class="currentData.uid ? 'toUid' : ''">{{currentData.author}}</span></div>
         </div>
         <div class="bless" @click.stop="()=>{}">
@@ -207,7 +208,7 @@ export default {
       window.open("https://zh.moegirl.org.cn/%E5%B0%8F%E5%B8%8C(%E8%99%9A%E6%8B%9FUP%E4%B8%BB)",'__blank')
     },
     clickGrid(index) {
-      if (this.showSurpirse) return
+      if (this.showSurpirse || this.grid[index]) return
       this.currentData = database.find(item=>item.index == index)
       let url = this.database.find(item=>index === item.index).url
       this.database.filter(item=>item.url === url).forEach(item => {
@@ -354,6 +355,16 @@ export default {
   font-family: 'bhwnn';
   text-align: left;
 }
+.allBless {
+  position: absolute;
+  bottom: 10%;
+  z-index: 5;
+  font-size: 3vh;
+  font-family: 'bhwnn';
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
 .before, .next {
   height: 100%;
   font-size: 50px;
@@ -372,6 +383,7 @@ export default {
   right: 0;
 }
 .resetIcon {
+  display: none;
   width: 50px;
   height: 50px;
   position: absolute;
@@ -473,11 +485,12 @@ export default {
   z-index: 4;
 }
 .blackCover::after {
-  content: "×";
-  font-size: 100px;
+  content: "点击空白处关闭";
+  font-size: 5vh;
   position: absolute;
-  right: 30px;
-  top: 15px;
+  width: 100%;
+  font-family: 'bhwnn';
+  top: 3vh;
   color:rgba(255, 255, 255, .7);
 }
 .blackCover .postcard {
